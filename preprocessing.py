@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 # True:  21192
 
 def main():
+    print("***Preprocessing Started***")
     fake_df = pd.read_csv("dataset/original/fake.csv")
     fake_df["label"] = 0
     true_df = pd.read_csv("dataset/original/true.csv")
@@ -21,6 +22,7 @@ def main():
     train_df.to_csv("dataset/train.csv")
     test_df.to_csv("dataset/test.csv")
     val_df.to_csv("dataset/val.csv")
+    print("***Preprocessing Finished***")
        
 if __name__ == "__main__":
     main()
