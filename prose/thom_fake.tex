@@ -5,7 +5,13 @@
 \date{04.03.2024}
 
 \usepackage[margin=1in]{geometry}
+\usepackage{floatrow} 
 \usepackage{times}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{graphicx}
+\graphicspath{ {./img/} }
+\usepackage{caption}
+
 
 \begin{document}
 \maketitle
@@ -23,12 +29,40 @@ For fine-tuning, I used the transformers \verb|BertForSequenceClassification| bu
 
 Throughout the training, accuracy increased 
 
-On the final evaluation script
+Running the final evaluation script,
+
+\textbf{Performance Metrics and Confusion Matrix}
+
+\begin{minipage}{\textwidth}
+
+\begin{minipage}[t]{.45\textwidth}
+\centering
+\includegraphics[width=0.7\textwidth]{confusion}
+\captionof{figure}{Figure caption}% \caption{Figure caption}
+\end{minipage}
+\begin{minipage}[t]{.45\textwidth}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|
+>{\columncolor[HTML]{F5F9FE}}l |l|l|l|l|}
+\hline
+\cellcolor[HTML]{08306B} & \multicolumn{1}{c|}{\cellcolor[HTML]{F5F9FE}Recall} & \multicolumn{1}{c|}{\cellcolor[HTML]{F5F9FE}Precision} & \multicolumn{1}{c|}{\cellcolor[HTML]{F5F9FE}F1-Score} & \multicolumn{1}{c|}{\cellcolor[HTML]{F5F9FE}Support} \\ \hline
+0                        & 0.98                                                & 0.99                                                   & 0.98                                                  & 5361                                                 \\ \hline
+1                        & 0.99                                                & 0.98                                                   & 0.98                                                  & 5459                                                 \\ \hline
+Accuracy                 &                                                     &                                                        & 0.98                                                  & 10820                                                \\ \hline
+Macro Average            & 0.98                                                & 0.98                                                   & 0.98                                                  & 10820                                                \\ \hline
+Weighted Average         & 0.98                                                & 0.98                                                   & 0.98                                                  & 10820                                                \\ \hline
+\end{tabular}
+}
+\end{minipage}
+\end{minipage}
+\\~\\
+
+
+\textbf{Analysis:} The performance metrics and the confusion matrix provide a comprehensive overview of the model's accuracy and classification prowess.
 
 looking at the sentences that underperformed
 
 insights
 
 conclusion
-
 \end{document}
