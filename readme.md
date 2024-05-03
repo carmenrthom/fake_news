@@ -1,6 +1,14 @@
 # Fake News Binary Classifier using BERT
 
 ## How to run  
+
+First clone the repository
+```{bat}
+git clone https://github.com/carmenrthom/fake_news.git
+```
+
+Download the database file *WELFake_Dataset.csv* into `dataset/original` available [here](https://www.kaggle.com/datasets/saurabhshahane/fake-news-classification/data)
+
 First, enter the directory of the project
 ```{bat}
 cd fake_news
