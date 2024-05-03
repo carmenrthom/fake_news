@@ -1,22 +1,48 @@
-import os
+import re
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-# Fake:  17455
-# True:  21192
+def remove_url(text):
+    url = re.compile(r'https?://\S+|www\.\S+')
+    return url.sub(r'',str(text))
+
+def remove_html(text):
+    html = re.compile(r'<.*?>')
+    return html.sub(r'',str(text))
+
+def remove_emoji(text):
+    emoji_pattern = re.compile("["
+        u"\U0001F600-\U0001F64F"  
+        u"\U0001F300-\U0001F5FF" 
+        u"\U0001F680-\U0001F6FF"  
+        u"\U0001F1E0-\U0001F1FF"  
+                           "]+", flags=re.UNICODE)
+    return emoji_pattern.sub(r'', str(text)) 
+
+def processing(df):
+    df = df.fillna('No info', axis=1)
+    df['text'] = 'TITLE: ' + df.title + '; TEXT: ' + df.text
+    return df
 
 def main():
+    try :
+        data = pd.read_csv('dataset/original/WELFake_Dataset.csv')
+    except Exception as error:
+        print("ERROR: Original unable to be loaded")
+        return
+    
     print("***Preprocessing Started***")
-    fake_df = pd.read_csv("dataset/original/fake.csv")
-    fake_df["label"] = 0
-    true_df = pd.read_csv("dataset/original/true.csv")
-    true_df["label"] = 1
+    data = data[['title','text','label']]
 
-    merge_df = pd.concat([fake_df, true_df])[["text", "label"]]
-    merge_df = merge_df.drop_duplicates()
-    merge_df = merge_df.sample(frac = 1)
+    data.dropna(subset=['label'], inplace=True)
+    data['label'] = data['label'].replace({'Real': 1, 'Fake': 0})
+    data['label'] = data['label'].astype(int)
+    data['text'] = data['text'].apply(remove_url)
+    data['text'] = data['text'].apply(remove_html)
+    data['text'] = data['text'].apply(remove_emoji)
+    data = processing(data)
 
-    train_df, test_df = train_test_split(merge_df, test_size=0.3, random_state=42)
+    train_df, test_df = train_test_split(data, test_size=0.3, random_state=42)
     test_df, val_df = train_test_split(test_df, test_size=0.5, random_state=42)
 
     train_df.to_csv("dataset/train.csv")
