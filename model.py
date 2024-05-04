@@ -1,4 +1,4 @@
-# classifier.py
+# model.py
 """
 BERT Binary Classifier
 Author: Carmen Thom
