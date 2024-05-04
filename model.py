@@ -96,7 +96,7 @@ def train_model(model_name, epochs=5, batch_size=32, max_length = 64, learning_r
         val_accuracies.append(val_accuracy)
         print(f"Epoch {epoch + 1}/{epoch}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy:.4f}, Training Loss: {train_loss:.4f}, Training Accuracy: {train_accuracy:.4f}")
 
-    torch.save(model, "saved_models/fine_tuned.pt")
+    torch.save(model, "fine_tuned.pt")
 
 def main():
     MODEL = 'google/bert_uncased_L-4_H-512_A-8'
