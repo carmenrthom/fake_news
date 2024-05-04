@@ -7,9 +7,9 @@ from transformers import BertTokenizer, BertForSequenceClassification
 from torch.optim.lr_scheduler import StepLR
 from torch.optim import AdamW
 
-def train_model(model_name, epochs=5, batch_size=32, max_length = 64, learning_rate= 5e-5, num_workers=0, dropout_rate=0.01):
+def train_model(model_name, epochs=5, batch_size=32, max_length = 64, learning_rate= 5e-5, dropout_rate=0.01):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = BertForSequenceClassification.from_pretrained(model_name, num_labels=1, attention_probs_dropout_prob=dropout_rate, hidden_dropout_prob=dropout_rate).to(device)
+    model = BertForSequenceClassification.from_pretrained(model_name, num_labels=2, attention_probs_dropout_prob=dropout_rate, hidden_dropout_prob=dropout_rate, output_attentions=True).to(device)
     tokenizer = BertTokenizer.from_pretrained('google/bert_uncased_L-4_H-512_A-8')
     optimizer = AdamW([
         {'params': model.bert.parameters(), 'lr': learning_rate},
@@ -104,10 +104,9 @@ def main():
     BATCH_SIZE = 64 # Default 32
     MAX_LENGTH = 64 # Default 64
     LEARNING_RATE = 5e-5 # Default 5e-5
-    NUM_WORKERS = 0 # Default 0
     DROPOUT = 0.01 # Default 0.01
 
-    train_model(MODEL, EPOCHS, BATCH_SIZE, MAX_LENGTH, LEARNING_RATE, NUM_WORKERS, DROPOUT)
+    train_model(MODEL, EPOCHS, BATCH_SIZE, MAX_LENGTH, LEARNING_RATE, DROPOUT)
 
 if __name__ == '__main__':
     main()
