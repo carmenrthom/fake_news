@@ -27,7 +27,10 @@ def train_model(model_name, epochs=5, batch_size=32, max_length=64, learning_rat
     ).to(device)
     
     tokenizer = BertTokenizer.from_pretrained(model_name)
-    optimizer = AdamW(model.parameters(), lr=learning_rate)
+    optimizer = AdamW([
+        {'params': model.bert.parameters(), 'lr': learning_rate},
+        {'params': model.classifier.parameters(), 'lr': learning_rate}
+    ], lr=learning_rate)
     criterion = torch.nn.CrossEntropyLoss()
     scheduler = StepLR(optimizer, step_size=1, gamma=0.1)
 
@@ -53,7 +56,7 @@ def train_model(model_name, epochs=5, batch_size=32, max_length=64, learning_rat
 
     for epoch in range(epochs):
         model.train()
-        train_loss, correct_train_preds = 0.0, 0
+        train_loss, train_correct_preds = 0.0,  0
 
         for batch in train_loader:
             input_ids, attention_mask, labels = batch
@@ -61,20 +64,22 @@ def train_model(model_name, epochs=5, batch_size=32, max_length=64, learning_rat
 
             optimizer.zero_grad()
             outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
-            loss = outputs.loss
-            train_loss += loss.item()
-            loss.backward()
+            tr_loss = outputs.loss
+            train_loss += tr_loss.item()
+            tr_loss.backward()
+
+            tr_logits = outputs.logits
+            tr_preds = torch.argmax(tr_logits, dim=1)
+            train_correct_preds += torch.sum(tr_preds == labels).item()
 
             clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
 
-            preds = torch.argmax(outputs.logits, dim=1)
-            correct_train_preds += torch.sum(preds == labels).item()
 
         scheduler.step()
-        train_accuracy = correct_train_preds / len(train_df)
-        train_losses.append(train_loss / len(train_loader))
-        train_accuracies.append(train_accuracy)
+        avg_train_loss = train_loss / len(train_loader)
+        train_losses.append(avg_train_loss)
+        train_accuracy = train_correct_preds / len(train_df)
 
         # Validation phase
         model.eval()
@@ -85,20 +90,24 @@ def train_model(model_name, epochs=5, batch_size=32, max_length=64, learning_rat
                 input_ids, attention_mask, labels = batch
                 input_ids, attention_mask, labels = input_ids.to(device), attention_mask.to(device), labels.to(device)
 
-                outputs = model(input_ids, attention_mask=attention_mask)
+                outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
                 loss = outputs.loss
                 val_loss += loss.item()
 
-                preds = torch.argmax(outputs.logits, dim=1)
+                logits = outputs.logits
+                preds = torch.argmax(logits, dim=1)
                 correct_val_preds += torch.sum(preds == labels).item()
+
+        # Validation calculations
+        avg_val_loss = val_loss / len(val_loader)
+        val_losses.append(avg_val_loss)  
 
         val_accuracy = correct_val_preds / len(val_df)
         val_losses.append(val_loss / len(val_loader))
-        val_accuracies.append(val_accuracy)
-        
+
         print(f"Epoch {epoch + 1}/{epochs}, Train Loss: {train_loss / len(train_loader):.4f}, Train Accuracy: {train_accuracy:.4f}, Val Loss: {val_loss / len(val_loader):.4f}, Val Accuracy: {val_accuracy:.4f}")
 
-    torch.save(model.state_dict(), "fine_tuned.pt")
+    torch.save(model, "fine_tuned.pt")
 
 def main():
     """Configure and run the training routine."""
