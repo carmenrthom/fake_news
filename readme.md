@@ -32,5 +32,8 @@ Run the model
 python model.py
 ```
 
-Evaluation script TO BE IMPLEMENTED
+Evaluation script can be run
+```{bat}
+python eval.py
+```
 
