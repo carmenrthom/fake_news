@@ -64,7 +64,7 @@ def evaluate_model(test_df, model):
 
 def main():
     try:
-        model = torch.load("saved_models/saved_model.pt")
+        model = torch.load("saved_models/fine_tuned.pt")
         test_df = pd.read_csv("dataset/test.csv")
         evaluate_model(test_df, model)
     except Exception as error:
