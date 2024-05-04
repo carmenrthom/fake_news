@@ -8,13 +8,12 @@ from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.metrics import ConfusionMatrixDisplay
 
 def evaluate_model(test_df, model):
-    max_length, batch_size = 64, 16  # Fixed the syntax error here and set a batch size.
-
+    max_length, batch_size = 64, 16
     texts_test = list(test_df["text"])
     test_labels = torch.tensor(list(test_df["label"]), dtype=torch.long)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
-
+    
     tokenizer = BertTokenizer.from_pretrained('google/bert_uncased_L-4_H-512_A-8')
     tokenized_texts_test = tokenizer(texts_test, padding=True, truncation=True, return_tensors="pt", max_length=max_length)
 
@@ -50,6 +49,18 @@ def evaluate_model(test_df, model):
     disp = ConfusionMatrixDisplay(confusion_matrix=cm)
     disp.plot(cmap=plt.cm.Blues)
     plt.show()
+
+    # Identify errors and save to files
+    fp_indices = np.where((np.array(all_preds) == 1) & (np.array(all_labels) == 0))[0]
+    fn_indices = np.where((np.array(all_preds) == 0) & (np.array(all_labels) == 1))[0]
+    
+    with open('type_1_errors.txt', 'w') as f:
+        for index in fp_indices:
+            f.write(texts_test[index] + '\n')
+    
+    with open('type_2_errors.txt', 'w') as f:
+        for index in fn_indices:
+            f.write(texts_test[index] + '\n')
 
 def main():
     try:
