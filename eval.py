@@ -50,6 +50,13 @@ def evaluate_model(test_df, model):
     disp.plot(cmap=plt.cm.Blues)
     plt.show()
 
+    cmn = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    disp = ConfusionMatrixDisplay(confusion_matrix=cmn)
+    disp.plot(cmap=plt.cm.Blues)
+    plt.show()
+
+    
+
     # Identify errors and save to files
     fp_indices = np.where((np.array(all_preds) == 1) & (np.array(all_labels) == 0))[0]
     fn_indices = np.where((np.array(all_preds) == 0) & (np.array(all_labels) == 1))[0]
