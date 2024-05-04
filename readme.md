@@ -7,7 +7,7 @@ First clone the repository
 git clone https://github.com/carmenrthom/fake_news.git
 ```
 
-Download the database file *WELFake_Dataset.csv* into `dataset/original` available [here](https://www.kaggle.com/datasets/saurabhshahane/fake-news-classification/data)
+Download the database file *WELFake_Dataset.csv* into `dataset/original` (create a folder "dataset" and a subfolder "original") available [here](https://www.kaggle.com/datasets/saurabhshahane/fake-news-classification/data)
 
 First, enter the directory of the project
 ```{bat}
