@@ -10,7 +10,7 @@ from torch.optim import AdamW
 def train_model(model_name, epochs=5, batch_size=32, max_length = 64, learning_rate= 5e-5, dropout_rate=0.01):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = BertForSequenceClassification.from_pretrained(model_name, num_labels=2, attention_probs_dropout_prob=dropout_rate, hidden_dropout_prob=dropout_rate, output_attentions=True).to(device)
-    tokenizer = BertTokenizer.from_pretrained('google/bert_uncased_L-4_H-512_A-8')
+    tokenizer = BertTokenizer.from_pretrained(model_name)
     optimizer = AdamW([
         {'params': model.bert.parameters(), 'lr': learning_rate},
         {'params': model.classifier.parameters(), 'lr': learning_rate}
