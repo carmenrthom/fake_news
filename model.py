@@ -1,3 +1,6 @@
+# BERT Binary Classifier 
+# Carmen Thom
+
 import os
 import pandas as pd
 import torch

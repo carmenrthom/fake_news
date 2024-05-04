@@ -1,3 +1,6 @@
+# Evaluation script for fine-tuned BERT Model
+# Carmen Thom
+
 import torch
 import pandas as pd
 import numpy as np
