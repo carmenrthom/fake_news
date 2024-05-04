@@ -92,9 +92,9 @@ def train_model(model_name, epochs=5, batch_size=32, max_length = 64, learning_r
         avg_val_loss = val_loss / len(val_loader)
         val_losses.append(avg_val_loss)        
 
-        val_accuracy = correct_preds / len(val_d)
+        val_accuracy = correct_preds / len(val_df)
         val_accuracies.append(val_accuracy)
-        print(f"Epoch {epoch + 1}/{num_epochs}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy:.4f}, Training Loss: {train_loss:.4f}, Training Accuracy: {train_accuracy:.4f}")
+        print(f"Epoch {epoch + 1}/{epoch}, Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy:.4f}, Training Loss: {train_loss:.4f}, Training Accuracy: {train_accuracy:.4f}")
 
     torch.save(model, "saved_model.pt")
 
